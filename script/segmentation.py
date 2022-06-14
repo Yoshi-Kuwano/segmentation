@@ -179,6 +179,7 @@ class ImgMaskDataset(Dataset):
         mask_patches = mask_patches.contiguous().view(-1, 512, 768)
         return img_patches, mask_patches
 
+
 # Dataloader
 def create_data_loader(img_dir, mask_dir):
                 
@@ -206,6 +207,7 @@ def create_data_loader(img_dir, mask_dir):
         valid_loader = DataLoader(valid_set, BATCH_SIZE, shuffle=True)
 
         return train_loader, valid_loader
+
 
 # Trainer
 class Train():
@@ -326,7 +328,7 @@ class Train():
             train_losses.append(train_loss/len(train_loader))
             val_losses.append(val_loss/len(valid_loader))
             
-            # Save model if loss updated
+            # Save model if min_loss is updated
             if min_loss > (val_loss / len(valid_loader)):
                 # print('Loss decreasing...{:.3f} >> {:.3f}'.format(min_loss, (val_loss/len(val_loader))))
                 min_loss = val_loss / len(valid_loader)
@@ -419,12 +421,14 @@ class Train():
 
 if __name__ == '__main__':
 
-    set_proxy()
+    # set_proxy()
     seed_everything()
 
-    
     trainer = Train(IMG_DIR, MASK_DIR)
     history, model_path = trainer.train(epochs=5)
+    trainer.plot_acc()
+    trainer.plot_iou()
+
 
 
 
