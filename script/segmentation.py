@@ -227,8 +227,8 @@ class Train():
         
         # Pretrained base model
         model = smp.Unet('efficientnet-b2', encoder_weights='imagenet',
-                               classes=N_CLASSES, activation=None, encoder_depth=5,
-                               decoder_channels=[256, 128, 64, 32, 16])
+                          classes=N_CLASSES, activation=None, encoder_depth=5,
+                          decoder_channels=[256, 128, 64, 32, 16])
         model.to(device)
 
         # Data loader
@@ -260,8 +260,8 @@ class Train():
         decrease = 0
         not_improve = 0
 
-        # Train start
-        train_start = time.time()
+        # Train
+        train_start_time = time.time()
         # # Loop per epoch
         for e in range(epochs):
             model.train()
@@ -370,7 +370,7 @@ class Train():
                 'train_mdice': train_dice, 'val_mdice': val_dice,
                 'train_acc' : train_acc, 'val_acc': val_acc,
                 'lrs': lrs}
-        print('Total time: {:.2f} min.' .format((time.time() - train_start)/60))
+        print('Total time: {:.2f} min.' .format((time.time() - train_start_time)/60))
         best_model_path = model_path.split('.pt')[0] + '_dice-{:.3f}'.format(best_dice) + '.pt'
         os.rename(model_path, best_model_path)
         if decrease<3:
@@ -380,7 +380,6 @@ class Train():
 
         return self.history, best_model_path
 
-    
     def plot_loss(self):
         plt.plot(self.history['train_loss'], label='train', marker='o')
         plt.plot(self.history['val_loss'], label='val', marker='o')
@@ -415,10 +414,7 @@ class Train():
 
 
 
-# Predicter
-
-
-
+# Main
 if __name__ == '__main__':
 
     # set_proxy()
@@ -428,7 +424,7 @@ if __name__ == '__main__':
     history, model_path = trainer.train(epochs=5)
     trainer.plot_acc()
     trainer.plot_iou()
-
+    
 
 
 
